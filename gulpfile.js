@@ -26,17 +26,20 @@ gulp.task('imageMin', () => {
 
 
 //Minimizes javascript
-gulp.task('minify', () => {
+gulp.task('minifyJS', () => {
   gulp.src('src/js/*.js')
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'));
 });
 
 //Compile Sass
-gulp.task('sass', () => {
+gulp.task('css', () => {
   gulp.src('src/sass/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('dist/css'));
+  .pipe(browserSync.reload({
+    stream: true
+  }));
 });
 
 //Scripts
@@ -45,14 +48,18 @@ gulp.task('scripts', () => {
     .pipe(concat('main.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'));
+  .pipe(browserSync.reload({
+    stream: true,
+    once: true
+  }));
 });
 
 //Watches below file types for changes and runs corresponding task
 gulp.task('watch', () => {
   gulp.watch('src/js/*.js', ['scripts']);
   gulp.watch('src/images/*', ['imageMin']);
-  gulp.watch('src/sass/*.scss', ['sass']);
-  gulp.watch('src/*.html', ['copyHTML']);
+  gulp.watch('src/sass/*.scss', ['css']);
+  gulp.watch('src/*.html', ['bs-reload']);
 });
 
 //Static server
@@ -69,5 +76,5 @@ gulp.task('bs-reload', function() {
   browserSync.reload();
 });
 
-//logs message without needing to specify which task
-gulp.task('default', ['message', 'copyHTML', 'imageMin', 'sass', 'scripts']);
+//Tasks that run when using only the command gulp
+gulp.task('default', ['message', 'copyHTML', 'imageMin', 'css', 'scripts', 'browser-sync']);
