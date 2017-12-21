@@ -4,6 +4,7 @@ const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 const browserSync = require('browser-sync');
+const babel = require('gulp-babel');
 
 //logs message
 gulp.task('message', () => {
@@ -32,6 +33,15 @@ gulp.task('minifyJS', () => {
     .pipe(gulp.dest('dist/js'));
 });
 
+//Converts ES6 to ES5
+gulp.task('es6', () => {
+  gulp.src('src/js/*.js')
+    .pipe(babel({
+      presets: 'es2015'
+    }))
+    .pipe(gulp.dest('dist'));
+})
+
 //Compile Sass
 gulp.task('css', () => {
   gulp.src('src/sass/*.scss')
@@ -56,7 +66,7 @@ gulp.task('scripts', () => {
 
 //Watches below file types for changes and runs corresponding task
 gulp.task('watch', () => {
-  gulp.watch('src/js/*.js', ['scripts']);
+  gulp.watch('src/js/*.js', ['scripts', 'es6']);
   gulp.watch('src/images/*', ['imageMin']);
   gulp.watch('src/sass/*.scss', ['css']);
   gulp.watch('src/*.html', ['bs-reload']);
@@ -77,4 +87,4 @@ gulp.task('bs-reload', function() {
 });
 
 //Tasks that run when using only the command gulp
-gulp.task('default', ['message', 'copyHTML', 'imageMin', 'css', 'scripts', 'browser-sync']);
+gulp.task('default', ['message', 'copyHTML', 'imageMin', 'css', 'scripts', 'es6', 'browser-sync']);

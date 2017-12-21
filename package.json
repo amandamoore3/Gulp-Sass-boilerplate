@@ -11,6 +11,7 @@
   "devDependencies": {
     "browser-sync": "^2.19.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-imagemin": "^4.0.0",
     "gulp-sass": "^3.1.0",
