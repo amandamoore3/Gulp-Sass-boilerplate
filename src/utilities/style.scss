@@ -1,0 +1,26 @@
+@import "src/utilities/_normalize";
+@import "src/utilities/_variables";
+
+
+body {
+  background-color: $bgColor;
+  font: 100% $font-stack;
+  color: $black;
+
+}
+
+a:link {
+  color: $url-color;
+  font-weight: $bold;
+  decoration: $url-decoration;
+}
+a:hover {
+  color: $black;
+}
+
+button {
+  font-weight: $bold;
+  text-align: $center-text;
+  background-color: $dark-gray;
+  color: $white;
+}

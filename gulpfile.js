@@ -1,9 +1,9 @@
 const gulp = require('gulp');
-const imageMin = require('gulp-imagemin');
+const imagemin = require('gulp-imagemin');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
-const browserSync = require('browser-sync');
+const browserSync = require('browser-sync').create();
 const babel = require('gulp-babel');
 
 //logs message
@@ -19,7 +19,7 @@ gulp.task('copyHTML', () => {
 });
 
 //Optimize images
-gulp.task('imageMin', () => {
+gulp.task('imagemin', () => {
   gulp.src('src/images/*')
     .pipe(imagemin())
     .pipe(gulp.dest('dist/images'));
@@ -37,19 +37,19 @@ gulp.task('minifyJS', () => {
 gulp.task('es6', () => {
   gulp.src('src/js/*.js')
     .pipe(babel({
-      presets: 'es2015'
+      presets: 'babel-preset-env'
     }))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist/js'));
 })
 
 //Compile Sass
 gulp.task('css', () => {
-  gulp.src('src/sass/*.scss')
+  gulp.src('src/utilities/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('dist/css'));
-  .pipe(browserSync.reload({
-    stream: true
-  }));
+    .pipe(gulp.dest('dist/css'))
+    .pipe(browserSync.reload({
+      stream: true
+    }));
 });
 
 //Scripts
@@ -57,18 +57,18 @@ gulp.task('scripts', () => {
   gulp.src('src/js/*.js')
     .pipe(concat('main.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/js'));
-  .pipe(browserSync.reload({
-    stream: true,
-    once: true
-  }));
+    .pipe(gulp.dest('dist/js'))
+    .pipe(browserSync.reload({
+      stream: true,
+      once: true
+    }));
 });
 
 //Watches below file types for changes and runs corresponding task
 gulp.task('watch', () => {
-  gulp.watch('src/js/*.js', ['scripts', 'es6']);
-  gulp.watch('src/images/*', ['imageMin']);
-  gulp.watch('src/sass/*.scss', ['css']);
+  gulp.watch('src/js/*.js', ['scripts', 'es6', 'bs-reload']);
+  gulp.watch('src/images/*', ['imagemin', 'bs-reload']);
+  gulp.watch('src/utilities/*.scss', ['css', 'bs-reload']);
   gulp.watch('src/*.html', ['bs-reload']);
 });
 
@@ -76,7 +76,7 @@ gulp.task('watch', () => {
 gulp.task('browser-sync', function() {
   browserSync.init({
     server: {
-      baseDir: "./"
+      baseDir: "dist"
     }
   });
 });
@@ -87,4 +87,4 @@ gulp.task('bs-reload', function() {
 });
 
 //Tasks that run when using only the command gulp
-gulp.task('default', ['message', 'copyHTML', 'imageMin', 'css', 'scripts', 'es6', 'browser-sync']);
+gulp.task('default', ['message', 'copyHTML', 'css', 'scripts', 'imagemin', 'es6', 'browser-sync', 'watch']);
