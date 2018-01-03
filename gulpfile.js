@@ -1,5 +1,7 @@
 const gulp = require('gulp');
 const imagemin = require('gulp-imagemin');
+// const image = require('gulp-image');
+// var imageop = require('gulp-image-optimization');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
@@ -11,6 +13,14 @@ gulp.task('message', () => {
   return console.log('Gulp is running');
 });
 
+//Converts ES6 to ES5
+gulp.task('es6', () => {
+  gulp.src('src/js/*.js')
+    .pipe(babel({
+      presets: 'babel-preset-env'
+    }))
+    .pipe(gulp.dest('src/es5'));
+});
 
 //COPY ALL HTML FILES
 gulp.task('copyHTML', () => {
@@ -24,23 +34,29 @@ gulp.task('imagemin', () => {
     .pipe(imagemin())
     .pipe(gulp.dest('dist/images'));
 });
-
+//
+// gulp.task('image', function() {
+//   gulp.src('src/images/*')
+//     .pipe(image())
+//     .pipe(gulp.dest('dist/images'));
+// });
+//
+// gulp.task('images', function(cb) {
+//   gulp.src('src/images/*').pipe(imageop({
+//     optimizationLevel: 5,
+//     progressive: true,
+//     interlaced: true
+//   })).pipe(gulp.dest('dist/images')).on('end', cb).on('error', cb);
+// });
 
 //Minimizes javascript
 gulp.task('minifyJS', () => {
-  gulp.src('src/js/*.js')
+  gulp.src('src/es5/*.js')
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'));
 });
 
-//Converts ES6 to ES5
-gulp.task('es6', () => {
-  gulp.src('src/js/*.js')
-    .pipe(babel({
-      presets: 'babel-preset-env'
-    }))
-    .pipe(gulp.dest('dist/js'));
-})
+
 
 //Compile Sass
 gulp.task('css', () => {
@@ -54,14 +70,14 @@ gulp.task('css', () => {
 
 //Scripts
 gulp.task('scripts', () => {
-  gulp.src('src/js/*.js')
+  gulp.src('src/es5/*.js')
     .pipe(concat('main.js'))
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'))
     .pipe(browserSync.reload({
       stream: true,
       once: true
-    }));
+    }))
 });
 
 //Watches below file types for changes and runs corresponding task
@@ -78,7 +94,7 @@ gulp.task('browser-sync', function() {
     server: {
       baseDir: "dist"
     }
-  });
+  })
 });
 
 //Browser-sync reload
@@ -87,4 +103,4 @@ gulp.task('bs-reload', function() {
 });
 
 //Tasks that run when using only the command gulp
-gulp.task('default', ['message', 'copyHTML', 'css', 'scripts', 'imagemin', 'es6', 'browser-sync', 'watch']);
+gulp.task('default', ['message', 'es6', 'copyHTML', 'css', 'scripts', 'imagemin', 'browser-sync', 'watch']);
