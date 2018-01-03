@@ -1,0 +1,45 @@
+/*//////GRID//////*/
+
+.gridContainer {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  grid-auto-flow: dense;
+  padding: 0;
+}
+
+.col1 {
+  float: left;
+  width: 8.33%;
+  border: solid 1px;
+}
+
+.col2 {
+  float: left;
+  width: 16.66%;
+  border: solid 1px;
+}
+
+.col3 {
+  float: left;
+  width: 25%;
+  border: solid 1px;
+}
+
+.col4 {
+  float: left;
+  width: 33.33%;
+  border: solid 1px;
+}
+
+.col6 {
+  float: left;
+  width: 50%;
+  border: solid 1px;
+}
+
+.col12 {
+  float: left;
+  width: 100%;
+  border: solid 1px;
+}
